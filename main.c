@@ -7,7 +7,6 @@
 #define MAX_ATTEMPTS 6
 #define WORD_LENGTH 5
 
-// Word list - you can expand this with more words
 const char *word_list[] = {
     "ABOUT", "ABUSE", "ACTOR", "ACUTE", "ADMIT", "ADOPT", "ADULT", "AFTER",
     "AGAIN", "AGENT", "AGREE", "AHEAD", "ALARM", "ALBUM", "ALERT", "ALIEN",
@@ -89,7 +88,6 @@ const char *word_list[] = {
     "INROS", "INROT", "INROU", "INROV", "INROW", "INROX", "INROY", "INROZ"
 };
 
-// Color codes for terminal output
 #define GREEN "\x1b[32m"
 #define YELLOW "\x1b[33m"
 #define GRAY "\x1b[90m"
@@ -98,7 +96,7 @@ const char *word_list[] = {
 
 typedef struct {
     char letter;
-    int status;  // 0 = gray, 1 = yellow, 2 = green
+    int status;
 } LetterStatus;
 
 void to_uppercase(char *str) {
@@ -122,22 +120,20 @@ int is_valid_word(const char *word) {
 LetterStatus *check_guess(const char *guess, const char *target) {
     LetterStatus *result = (LetterStatus *)malloc(WORD_LENGTH * sizeof(LetterStatus));
     
-    // First pass: mark greens and set status
     for (int i = 0; i < WORD_LENGTH; i++) {
         result[i].letter = guess[i];
         if (guess[i] == target[i]) {
-            result[i].status = 2;  // Green - correct position
+            result[i].status = 2;
         } else {
-            result[i].status = 0;  // Default to gray
+            result[i].status = 0;
         }
     }
     
-    // Second pass: mark yellows
     for (int i = 0; i < WORD_LENGTH; i++) {
-        if (result[i].status == 0) {  // Not green
+        if (result[i].status == 0) {
             for (int j = 0; j < WORD_LENGTH; j++) {
                 if (i != j && guess[i] == target[j] && result[j].status != 2) {
-                    result[i].status = 1;  // Yellow - wrong position
+                    result[i].status = 1;
                     break;
                 }
             }
@@ -175,7 +171,6 @@ void print_header() {
 int main() {
     srand(time(NULL));
     
-    // Pick a random word
     int word_count = sizeof(word_list) / sizeof(word_list[0]);
     const char *target_word = word_list[rand() % word_count];
     
@@ -188,19 +183,16 @@ int main() {
     while (attempts < MAX_ATTEMPTS) {
         printf("%sAttempt %d/%d: %s", BOLD, attempts + 1, MAX_ATTEMPTS, RESET);
         
-        // Get user input
         if (fgets(guess, sizeof(guess), stdin) == NULL) {
             break;
         }
         
-        // Remove newline
         if (guess[strlen(guess) - 1] == '\n') {
             guess[strlen(guess) - 1] = '\0';
         }
         
         to_uppercase(guess);
         
-        // Validate input
         if (strlen(guess) != WORD_LENGTH) {
             printf("%sError: Word must be exactly %d letters long.%s\n\n", BOLD, WORD_LENGTH, RESET);
             continue;
@@ -219,14 +211,12 @@ int main() {
             continue;
         }
         
-        // Check the guess
         LetterStatus *result = check_guess(guess, target_word);
         print_guess_result(result);
         free(result);
         
         attempts++;
         
-        // Check if won
         if (strcmp(guess, target_word) == 0) {
             won = 1;
             break;
@@ -235,7 +225,6 @@ int main() {
         printf("\n");
     }
     
-    // Print result
     printf("\n%s=======================%s\n", BOLD, RESET);
     if (won) {
         printf("%sYOU WON!%s\n", GREEN, RESET);
