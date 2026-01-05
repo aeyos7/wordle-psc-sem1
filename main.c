@@ -44,9 +44,9 @@ int main() {
         }
 
         int targetUsed[5] = {0, 0, 0, 0, 0};
-        int guessStatus[5] = {0, 0, 0, 0, 0}; // 2 = Green, 1 = Yellow, 0 = Gray
+        int guessStatus[5] = {0, 0, 0, 0, 0}; 
 
-        // First Pass: Check for Greens (Correct spot)
+        
         for (int i = 0; i < WORD_LENGTH; i++) {
             if (guess[i] == targetWord[i]) {
                 guessStatus[i] = 2;
@@ -54,9 +54,8 @@ int main() {
             }
         }
 
-        // Second Pass: Check for Yellows (Wrong spot)
         for (int i = 0; i < WORD_LENGTH; i++) {
-            if (guessStatus[i] == 0) { // If not already green
+            if (guessStatus[i] == 0) { 
                 for (int j = 0; j < WORD_LENGTH; j++) {
                     if (!targetUsed[j] && guess[i] == targetWord[j]) {
                         guessStatus[i] = 1;
@@ -67,7 +66,6 @@ int main() {
             }
         }
 
-        // Print colored output
         printf("Result: ");
         for (int i = 0; i < WORD_LENGTH; i++) {
             if (guessStatus[i] == 2) {
